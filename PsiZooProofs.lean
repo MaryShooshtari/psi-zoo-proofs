@@ -6,3 +6,5 @@ import PsiZooProofs.GridInnerProduct
 import PsiZooProofs.GridHamiltonian
 import PsiZooProofs.CrankNicolsonConservation
 import PsiZooProofs.CrankNicolsonInvertibility
+import PsiZooProofs.CrankNicolsonEvolution
+import PsiZooProofs.CrankNicolsonUnitarity
