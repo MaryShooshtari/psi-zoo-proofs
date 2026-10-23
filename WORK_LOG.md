@@ -44,3 +44,15 @@ Each milestone must compile independently and via `lake build`. No toolchain/cac
 - One attempt to run three Lean checks in parallel hit `std::bad_alloc`; serial reruns succeeded. No cache/toolchain changes or deletions. Prefer serial checks on this machine.
 - Replaced the unnecessary exponential-derivative import with basic exponential + linear-arithmetic imports. This reduced the full dependency job count from 4788 to 4116 without weakening proofs.
 - All extensions checked; full build: `Build completed successfully (4116 jobs).` No Lean warnings.
+
+## Documentation and final audit
+
+- Updated README with concise application-to-module/theorem map and removed the outdated statement that static-H energy conservation was unproved.
+- Added `docs/VERIFIED_INVARIANTS.md`: complete theorem inventory, explicit assumptions, source links, mathematical proof chain, explanation of every tactic used, and verification boundaries/remaining optional work.
+- Added `Checks.lean` to print central statements and axiom dependencies after a build.
+- `lake env lean Checks.lean` succeeded. Each of the ten audited central declarations depends only on `[propext, Classical.choice, Quot.sound]`; no custom axioms or `sorryAx`.
+- Search of all proof modules found no `sorry`, `admit`, `unsafe`, custom `axiom`, or `native_decide` occurrences. (The search returning no matches naturally exits 1; this was not a Lean build failure.)
+- Added 62 theorems across five new subject modules. All are complete under their displayed mathematical hypotheses. The only conditional conservation helper takes the actual implicit step equation; general Cayley invertibility/unitarity is fully discharged.
+- Final full build: `Build completed successfully (4116 jobs).` No Lean warnings. `git diff --check` passed; Git only reports its usual Windows LF/CRLF conversion notices.
+- No existing theorem was removed or weakened. Toolchain, manifest, dependencies, workflows, and application repository were not modified. No remote CI/deployment claim, push, merge, or PR.
+- Core milestones A–E are complete. Optional kinetic positivity/spectral results, path supremum/subdivision, continuum and floating-point verification remain explicitly out of scope and unclaimed.

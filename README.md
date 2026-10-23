@@ -13,6 +13,8 @@ of the TypeScript implementation or the entire application.
   mathematical statement-to-Lean map.
 - **Compare with experiment:** [Gaussian spreading and numerical conservation results](https://github.com/MaryShooshtari/psi-zoo/blob/main/docs/FREE_GAUSSIAN_VALIDATION.md).
 - **Check the proofs:** follow the source map below and run `lake build`.
+- **Inspect Slice 2 and general Cayley results:** [verified invariants, assumptions,
+  theorem inventory, and proof explanations](docs/VERIFIED_INVARIANTS.md).
 
 ## Completed Crank–Nicolson proof chain
 
@@ -48,6 +50,39 @@ contains the polarization argument, adjoint derivation, complete CN theorem map,
 and measured TypeScript conservation results. Links between the repositories are
 editorial, not a mechanically verified implementation correspondence.
 
+## Slice 2 invariants and general Hermitian evolution
+
+The following additions are fully proved under their explicit mathematical
+hypotheses; in particular, general Cayley unitarity does **not** assume
+invertibility. All names are in namespace `PsiZoo`.
+
+| Application property | Lean module | Principal theorem names |
+| --- | --- | --- |
+| Regional masses are nonnegative and bounded by total mass | [RegionProbability](PsiZooProofs/RegionProbability.lean) | `regionProbability_nonneg`, `regionProbability_le_total` |
+| Ordered left/interaction/right cuts account for all mass; normalized partitions sum to one | [RegionProbability](PsiZooProofs/RegionProbability.lean) | `spatial_region_probability_sum`, `regionProbability_partition_normalized`, `regionProbability_partition_sum_one` |
+| Gaussian barriers lie in `[0,A]` and peak at their center | [PotentialLandscape](PsiZooProofs/PotentialLandscape.lean) | `gaussianBarrier_nonneg`, `gaussianBarrier_le_amplitude`, `gaussianBarrier_eq_amplitude_iff` |
+| Maximum painting is monotone, idempotent, order-independent, and cap-preserving | [PotentialLandscape](PsiZooProofs/PotentialLandscape.lean) | `stampPotential_increases`, `stampPotential_idempotent`, `stampPotential_order_independent`, `stampPotential_fold_bounds` |
+| Swept Gaussian profile is bounded and direction-independent | [PotentialLandscape](PsiZooProofs/PotentialLandscape.lean) | `gaussianPathProfile_bounds`, `gaussianPathProfile_reverse` |
+| Hamiltonian is kinetic plus real diagonal potential | [HamiltonianStructure](PsiZooProofs/HamiltonianStructure.lean) | `realPotentialMatrix_isHermitian`, `gridKineticMatrix_isHermitian`, `gridHamiltonianMatrix_decomposition` |
+| Cayley evolution for any finite Hermitian H has an inverse and is unitary | [HermitianCayley](PsiZooProofs/HermitianCayley.lean) | `cayleyLeft_isUnit`, `hermitianCayley_mem_unitaryGroup` |
+| Repeated evolution preserves normalization; negative time reverses evolution | [HermitianCayley](PsiZooProofs/HermitianCayley.lean) | `hermitianCayley_iterate_normalized`, `hermitianCayley_neg_time` |
+| Static-H energy is conserved | [HermitianCayley](PsiZooProofs/HermitianCayley.lean) | `hermitianCayley_energy`, `hermitianCayley_iterate_energy`, `crankNicolsonEvolution_energy` |
+| Exact sharp projection has regional mass and can be normalized after a nonzero outcome | [CoordinateProjection](PsiZooProofs/CoordinateProjection.lean) | `coordinateProjection_mass`, `coordinateProjection_pythagoras`, `normalize_coordinateProjection` |
+
+The general theorem uses `H : Matrix (Fin n) (Fin n) ℂ` for arbitrary n and a
+real **half timestep** `t = dt/2`. It allows zero/negative timesteps and empty
+spaces. Probability bounds require nonnegative spacing; physical normalization
+requires positive spacing and a nonzero state. Static energy conservation uses
+the same H throughout. A sequence of changing Hermitian Hamiltonians still
+preserves mass (`hermitianCayley_sequence_norm`), but no energy conservation
+is asserted for changing H.
+
+The [detailed guide](docs/VERIFIED_INVARIANTS.md) explains every theorem group,
+assumption, tactic, TypeScript source correspondence, and remaining limitation.
+Regional mass is not automatically a reflection/transmission coefficient.
+Painting uses maximum rather than addition, and validates its cap rather than
+silently clipping terrain. Exact projection is not a Gaussian measurement mask.
+
 ## Build and inspect
 
 Install [elan](https://github.com/leanprover/elan) and use the versions already
@@ -57,6 +92,7 @@ Lean or Mathlib version. From this repository:
 ```bash
 lake exe cache get
 lake build
+lake env lean Checks.lean  # display central theorem types and axiom dependencies
 ```
 
 The cache command downloads available Mathlib build artifacts; `lake build`
@@ -70,8 +106,11 @@ No npm packages are needed here. Keep the app's `node_modules` and this repo's
   input-validation paths, or their correspondence to these Lean definitions.
 - IEEE-754 rounding-error bounds or success at extreme numerical scales.
 - Approximation of the continuum PDE, Gaussian spreading, or convergence rates.
-- Static-H energy conservation over time (numerically tested in the app);
-  the current formal Hamiltonian result proves reality of the energy form.
+- Tunnelling, stationary benchmark correctness, or interpretation of raw regional
+  mass as asymptotic scattering coefficients.
+- Kinetic positive definiteness, spectral bounds, or a Gaussian path-envelope
+  supremum/subdivision theorem (the implemented nearest-point profile has
+  formal bounds and direction symmetry).
 - Rendering, playback, general measurement updates, Bloch dynamics, or entanglement.
 
 The application tests supply separate numerical evidence, with stated
