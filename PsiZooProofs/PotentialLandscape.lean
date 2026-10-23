@@ -1,7 +1,7 @@
 module
 
-public import Mathlib.Analysis.SpecialFunctions.ExpDeriv
-public import Mathlib.Tactic.Positivity
+public import Mathlib.Analysis.Complex.Exponential
+public import Mathlib.Tactic.Linarith
 
 set_option linter.style.header false
 
@@ -94,5 +94,48 @@ theorem stampPotential_fold_bounds {ι : Type*} (profiles : List (ι → ℝ))
     · exact stampPotential_bounds V W M hV (hprofiles W (by simp))
     · intro Z hZ
       exact hprofiles Z (by simp [hZ])
+
+/-- Positive amplitude gives a strictly positive exact Gaussian at every finite x.
+This does not assert the same for floating-point exponentiation (which can underflow). -/
+theorem gaussianBarrier_pos (A c sigma x : ℝ) (hA : 0 < A) :
+    0 < gaussianBarrier A c sigma x := by
+  exact mul_pos hA (Real.exp_pos _)
+
+/-- A nondegenerate Gaussian with positive amplitude has a unique maximum. -/
+theorem gaussianBarrier_eq_amplitude_iff (A c sigma x : ℝ) (hA : 0 < A)
+    (hsigma : sigma ≠ 0) : gaussianBarrier A c sigma x = A ↔ x = c := by
+  unfold gaussianBarrier
+  rw [mul_eq_left₀ (ne_of_gt hA), Real.exp_eq_one_iff]
+  constructor
+  · intro h
+    have hsq : ((x - c) / sigma) ^ 2 = 0 := by linarith
+    have hz := (sq_eq_zero_iff).mp hsq
+    exact sub_eq_zero.mp ((div_eq_zero_iff).mp hz |>.resolve_right hsigma)
+  · intro h
+    simp [h]
+
+/-- The application's continuous-path profile uses the nearest center in the segment. -/
+noncomputable def gaussianPathProfile (A sigma a b x : ℝ) : ℝ :=
+  gaussianBarrier A (max (min a b) (min x (max a b))) sigma x
+
+theorem gaussianPathProfile_bounds (A sigma a b x : ℝ) (hA : 0 ≤ A) :
+    0 ≤ gaussianPathProfile A sigma a b x ∧ gaussianPathProfile A sigma a b x ≤ A := by
+  exact ⟨gaussianBarrier_nonneg _ _ _ _ hA, gaussianBarrier_le_amplitude _ _ _ _ hA⟩
+
+theorem gaussianPathProfile_reverse (A sigma a b : ℝ) :
+    gaussianPathProfile A sigma a b = gaussianPathProfile A sigma b a := by
+  funext x
+  simp only [gaussianPathProfile, min_comm a b, max_comm a b]
+
+/-- The swept profile reaches the amplitude everywhere along the traversed segment. -/
+theorem gaussianPathProfile_on_segment (A sigma a b x : ℝ)
+    (ha : min a b ≤ x) (hb : x ≤ max a b) : gaussianPathProfile A sigma a b x = A := by
+  unfold gaussianPathProfile
+  rw [min_eq_left hb, max_eq_right ha, gaussianBarrier_center]
+
+/-- The zero-length path is exactly a single Gaussian stamp. -/
+theorem gaussianPathProfile_point (A sigma c x : ℝ) :
+    gaussianPathProfile A sigma c c x = gaussianBarrier A c sigma x := by
+  simp only [gaussianPathProfile, min_self, max_self, max_eq_left (min_le_right x c)]
 
 end PsiZoo

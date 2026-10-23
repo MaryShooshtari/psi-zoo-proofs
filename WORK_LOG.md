@@ -35,3 +35,12 @@ Each milestone must compile independently and via `lake build`. No toolchain/cac
 - Debugging: normalized two equivalent complex conjugation spellings before ring algebra; checked actual matrix diagonal-action lemma name; replaced deprecated `push_neg`; removed unused simp arguments and split long lines. No validation was disabled.
 - Full build after these additions: `Build completed successfully (4788 jobs).` No Lean warnings.
 - Energy proof uses commutation and preservation of inner products, not floating-point evidence. Repeated-step proofs use induction. Positive projection mass is a necessary stated outcome condition, not an assumed inverse or a proof shortcut.
+
+## Further invariants
+
+- Added arbitrary finite disjoint probability partitions and direct spatial-cut accounting.
+- Added Cayley right unitarity, negative-time adjoint/reversal, and norm conservation for a finite sequence of changing Hermitian Hamiltonians/timesteps (not energy conservation for changing H).
+- Added strict Gaussian positivity, unique peak for positive amplitude/nonzero width, and nearest-segment path-profile bounds, reversal symmetry, on-segment amplitude, and point-path identity.
+- One attempt to run three Lean checks in parallel hit `std::bad_alloc`; serial reruns succeeded. No cache/toolchain changes or deletions. Prefer serial checks on this machine.
+- Replaced the unnecessary exponential-derivative import with basic exponential + linear-arithmetic imports. This reduced the full dependency job count from 4788 to 4116 without weakening proofs.
+- All extensions checked; full build: `Build completed successfully (4116 jobs).` No Lean warnings.

@@ -216,4 +216,38 @@ theorem crankNicolsonEvolution_energy {n : ℕ} (dx dt : ℝ) (V : Fin n → ℝ
         gridInnerProduct dx psi (applyGridHamiltonian dx V psi) := by
   exact hermitianCayley_energy _ (gridHamiltonianMatrix_isHermitian dx V) (dt / 2) dx psi
 
+/-- The right unitarity identity also holds in dimension zero. -/
+theorem hermitianCayley_mul_conjTranspose_self {n : ℕ} (H : Matrix (Fin n) (Fin n) ℂ)
+    (hH : H.IsHermitian) (t : ℝ) : hermitianCayley H t * (hermitianCayley H t)ᴴ = 1 := by
+  exact mul_eq_one_comm.mp (hermitianCayley_conjTranspose_mul_self H hH t)
+
+/-- Negating the real timestep reverses exact evolution. -/
+theorem hermitianCayley_neg_time {n : ℕ} (H : Matrix (Fin n) (Fin n) ℂ)
+    (hH : H.IsHermitian) (t : ℝ) : hermitianCayley H (-t) = (hermitianCayley H t)ᴴ := by
+  have hnegA : cayleyLeft H (-t) = cayleyRight H t := by
+    simp [cayleyLeft, cayleyRight, sub_eq_add_neg]
+  have hnegB : cayleyRight H (-t) = cayleyLeft H t := by
+    simp [cayleyLeft, cayleyRight, sub_eq_add_neg]
+  have he := congrArg (fun M => M * (hermitianCayley H t)ᴴ) (cayleyLeft_mul_cayley H hH t)
+  rw [Matrix.mul_assoc, hermitianCayley_mul_conjTranspose_self H hH t, Matrix.mul_one] at he
+  have hs : cayleyLeft H (-t) * (hermitianCayley H t)ᴴ = cayleyRight H (-t) := by
+    rw [hnegA, hnegB]
+    exact he.symm
+  have hd := (Matrix.isUnit_iff_isUnit_det _).mp (cayleyLeft_isUnit H hH (-t))
+  rw [hermitianCayley, ← hs, Matrix.nonsing_inv_mul_cancel_left _ _ hd]
+
+/-- Any finite sequence of Hermitian steps preserves norm, even if H and t change.
+Energy conservation is deliberately not asserted for such changing Hamiltonians. -/
+theorem hermitianCayley_sequence_norm {n : ℕ}
+    (steps : List (Matrix (Fin n) (Fin n) ℂ × ℝ)) (dx : ℝ) (psi : Fin n → ℂ)
+    (hsteps : ∀ s ∈ steps, s.1.IsHermitian) :
+    weightedSquaredNorm dx
+      (steps.foldl (fun state s => (hermitianCayley s.1 s.2).mulVec state) psi) =
+        weightedSquaredNorm dx psi := by
+  induction steps generalizing psi with
+  | nil => rfl
+  | cons s rest ih =>
+    rw [List.foldl_cons, ih _ (fun a ha => hsteps a (by simp [ha]))]
+    exact hermitianCayley_weightedSquaredNorm _ (hsteps s (by simp)) _ _ _
+
 end PsiZoo

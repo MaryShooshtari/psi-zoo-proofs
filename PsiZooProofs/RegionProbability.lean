@@ -94,4 +94,32 @@ theorem spatial_region_partition {n : ℕ} (x : Fin n → ℝ) (a b : ℝ) (hab 
     · exact Or.inr h'
     exact Or.inl (Or.inr ⟨le_of_not_gt h, le_of_not_gt h'⟩)
 
+/-- Direct accounting for the exact strict/inclusive cuts used by regions.ts. -/
+theorem spatial_region_probability_sum {n : ℕ} (dx : ℝ) (psi : Fin n → ℂ)
+    (x : Fin n → ℝ) (a b : ℝ) (hab : a ≤ b) :
+    regionProbability dx psi (Finset.univ.filter (fun i => x i < a)) +
+      regionProbability dx psi (Finset.univ.filter (fun i => a ≤ x i ∧ x i ≤ b)) +
+      regionProbability dx psi (Finset.univ.filter (fun i => b < x i)) =
+        weightedSquaredNorm dx psi := by
+  obtain ⟨hst, hsu, htu, hcover⟩ := spatial_region_partition x a b hab
+  exact regionProbability_partition_three dx psi _ _ _ hst hsu htu hcover
+
+/-- Arbitrarily many pairwise disjoint regions account for their union's mass. -/
+theorem regionProbability_partition {n : ℕ} {κ : Type*}
+    (dx : ℝ) (psi : Fin n → ℂ) (labels : Finset κ) (regions : κ → Finset (Fin n))
+    (hdisj : (↑labels : Set κ).PairwiseDisjoint regions) :
+    ∑ k ∈ labels, regionProbability dx psi (regions k) =
+      regionProbability dx psi (labels.biUnion regions) := by
+  unfold regionProbability
+  rw [← Finset.mul_sum, Finset.sum_biUnion hdisj]
+
+/-- Finite partition accounting for a normalized state. -/
+theorem regionProbability_partition_sum_one {n : ℕ} {κ : Type*}
+    (dx : ℝ) (psi : Fin n → ℂ) (labels : Finset κ) (regions : κ → Finset (Fin n))
+    (hdisj : (↑labels : Set κ).PairwiseDisjoint regions)
+    (hcover : labels.biUnion regions = Finset.univ) (hnorm : weightedSquaredNorm dx psi = 1) :
+    ∑ k ∈ labels, regionProbability dx psi (regions k) = 1 := by
+  rw [regionProbability_partition dx psi labels regions hdisj, hcover,
+    regionProbability_univ, hnorm]
+
 end PsiZoo
