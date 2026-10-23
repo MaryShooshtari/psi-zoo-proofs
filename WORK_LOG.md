@@ -26,3 +26,12 @@ Each milestone must compile independently and via `lake build`. No toolchain/cac
 - Both modules checked independently with `lake env lean` (exit 0, no diagnostics).
 - Full build: `Build completed successfully (4782 jobs).` No Lean warnings.
 - Proof techniques: existing nonnegative norm-square and finite-sum lemmas; ordered-real cases for spatial cuts; exponential monotonicity; lattice identities for maximum; induction for a list of stamps.
+
+## Milestones C and D, and projection extension
+
+- Added `HermitianCayley.lean`: arbitrary Hermitian H on `Fin n`, arbitrary real half timestep; implicit norm conservation, proved invertibility, unconditional unitary-group membership, full inner-product preservation, commutation with H, static energy conservation and repeated-step norm/energy conservation. The grid evolution is definitionally this general transform.
+- Added `HamiltonianStructure.lean`: explicit kinetic + real-diagonal potential decomposition, separate Hermiticity proofs, potential-energy formula and nonnegativity for nonnegative V.
+- Added `CoordinateProjection.lean`: exact sharp coordinate projection, idempotence, self-adjointness, mass identity/bound, complementary mass decomposition, and normalization after positive-probability projection.
+- Debugging: normalized two equivalent complex conjugation spellings before ring algebra; checked actual matrix diagonal-action lemma name; replaced deprecated `push_neg`; removed unused simp arguments and split long lines. No validation was disabled.
+- Full build after these additions: `Build completed successfully (4788 jobs).` No Lean warnings.
+- Energy proof uses commutation and preservation of inner products, not floating-point evidence. Repeated-step proofs use induction. Positive projection mass is a necessary stated outcome condition, not an assumed inverse or a proof shortcut.
