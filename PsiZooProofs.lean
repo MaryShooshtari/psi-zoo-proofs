@@ -8,3 +8,8 @@ import PsiZooProofs.CrankNicolsonConservation
 import PsiZooProofs.CrankNicolsonInvertibility
 import PsiZooProofs.CrankNicolsonEvolution
 import PsiZooProofs.CrankNicolsonUnitarity
+import PsiZooProofs.RegionProbability
+import PsiZooProofs.PotentialLandscape
+import PsiZooProofs.HermitianCayley
+import PsiZooProofs.HamiltonianStructure
+import PsiZooProofs.CoordinateProjection
