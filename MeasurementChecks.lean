@@ -1,0 +1,31 @@
+import PsiZooProofs.GaussianMeasurement
+
+#check PsiZoo.MeasurementResponse.probability_nonneg
+#check PsiZoo.MeasurementResponse.sum_probability
+#check PsiZoo.MeasurementResponse.completeness
+#check PsiZoo.MeasurementResponse.probability_eq_norm_ratio
+#check PsiZoo.MeasurementResponse.conditional_normalized
+#check PsiZoo.MeasurementResponse.conditional_positive_ray
+#check PsiZoo.MeasurementResponse.relative_phase_algebra
+#check PsiZoo.MeasurementResponse.conditional_cn_normalized
+#check PsiZoo.gaussianResponseDenominator_pos
+#check PsiZoo.gaussian_sum_column
+#check PsiZoo.gaussian_probability_pos
+#check PsiZoo.gaussian_sum_probability
+#check PsiZoo.gaussian_conditional_normalized
+#check PsiZoo.delta_mask_eq_coordinateProjection
+#check PsiZoo.delta_mask_mass
+#print axioms PsiZoo.MeasurementResponse.probability_nonneg
+#print axioms PsiZoo.MeasurementResponse.sum_probability
+#print axioms PsiZoo.MeasurementResponse.completeness
+#print axioms PsiZoo.MeasurementResponse.probability_eq_norm_ratio
+#print axioms PsiZoo.MeasurementResponse.conditional_normalized
+#print axioms PsiZoo.MeasurementResponse.conditional_positive_ray
+#print axioms PsiZoo.MeasurementResponse.relative_phase_algebra
+#print axioms PsiZoo.MeasurementResponse.conditional_cn_normalized
+#print axioms PsiZoo.gaussianResponse
+#print axioms PsiZoo.gaussian_completeness
+#print axioms PsiZoo.gaussian_sum_probability
+#print axioms PsiZoo.gaussian_probability_pos
+#print axioms PsiZoo.gaussian_conditional_normalized
+#print axioms PsiZoo.delta_mask_mass

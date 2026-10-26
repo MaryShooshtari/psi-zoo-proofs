@@ -83,6 +83,43 @@ Regional mass is not automatically a reflection/transmission coefficient.
 Painting uses maximum rather than addition, and validates its cap rather than
 silently clipping terrain. Exact projection is not a Gaussian measurement mask.
 
+## Slice 3: finite-resolution Gaussian measurement
+
+[GaussianMeasurement.lean](PsiZooProofs/GaussianMeasurement.lean) and
+[FiniteMeasurement.lean](PsiZooProofs/FiniteMeasurement.lean) formalize the exact
+finite measurement model behind the simulation's
+[`positionMeasurementProbabilities` and `measurePosition`](https://github.com/MaryShooshtari/psi-zoo/blob/main/packages/sim-core/src/measurement.ts).
+The [observer notebook](https://github.com/MaryShooshtari/psi-zoo/blob/main/packages/web/src/content/notebook/observer.md)
+explains the Born-rule experiment.
+
+On interior sites `Fin n`, the detector uses
+`G(j,i) = exp(-(x_j-x_i)^2/(2 sigma^2))` and
+`K(j|i) = G(j,i) / sum_k G(k,i)`: normalization is over observed outcomes
+for **each input position**, including near walls. States have squared norm
+`N = dx * sum_i |psi_i|^2`. Outcome masses are
+`P(j) = dx * sum_i K(j|i)|psi_i|^2 / N`, and the conditional update is
+`sqrt(K(j|i))*psi_i / sqrt(N*P(j))`.
+
+Principal checked results are `MeasurementResponse.probability_nonneg`,
+`MeasurementResponse.sum_probability`, `MeasurementResponse.completeness`
+(the actual matrix identity `sum_j M_jᴴ M_j = I`),
+`MeasurementResponse.probability_eq_norm_ratio`,
+`MeasurementResponse.conditional_normalized`,
+`MeasurementResponse.conditional_positive_ray`, and
+`MeasurementResponse.relative_phase_algebra`.
+`gaussianResponseDenominator_pos`, `gaussian_sum_column`,
+`gaussian_completeness`, `gaussian_sum_probability`, and
+`gaussian_conditional_normalized` establish the normalized Gaussian instance.
+Positive spacing, nonzero input, positive resolution and dimension, and
+positive conditioning probability are explicit where required.
+
+`delta_mask_eq_coordinateProjection` connects the ideal delta detector to the
+existing sharp projection proof. A Gaussian POVM is **not** an exact coordinate
+projection. `MeasurementResponse.conditional_cn_normalized` reuses existing
+CN norm preservation; it makes no measurement energy-conservation claim.
+See the [complete theorem inventory, implementation map, tactic explanations,
+and numerical exclusions](docs/GAUSSIAN_MEASUREMENT.md).
+
 ## Build and inspect
 
 Install [elan](https://github.com/leanprover/elan) and use the versions already
@@ -111,7 +148,8 @@ No npm packages are needed here. Keep the app's `node_modules` and this repo's
 - Kinetic positive definiteness, spectral bounds, or a Gaussian path-envelope
   supremum/subdivision theorem (the implemented nearest-point profile has
   formal bounds and direction symmetry).
-- Rendering, playback, general measurement updates, Bloch dynamics, or entanglement.
+- Rendering, playback, floating-point measurement execution or sampling, Bloch
+  dynamics, or entanglement. The exact finite Gaussian POVM is proved above.
 
 The application tests supply separate numerical evidence, with stated
 conservation budgets and continuum comparison tolerances. Exact unitarity does

@@ -13,3 +13,5 @@ import PsiZooProofs.PotentialLandscape
 import PsiZooProofs.HermitianCayley
 import PsiZooProofs.HamiltonianStructure
 import PsiZooProofs.CoordinateProjection
+import PsiZooProofs.FiniteMeasurement
+import PsiZooProofs.GaussianMeasurement
