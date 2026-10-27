@@ -5,6 +5,15 @@ mathematical results over ℝ and ℂ, using the pinned Lean/Mathlib installatio
 They are not formal verification of TypeScript, floating-point arithmetic, GUI
 behavior, or the continuum Schrödinger equation.
 
+## Slice 4 update
+
+See [Slice 4 coverage](SLICE4_COVERAGE.md) for the 27 new qubit, exponential,
+mood-drive, and mean-field interaction theorems, their exact assumptions and
+TypeScript source mapping. The original invariant inventory below is retained.
+Bloch rotation is now proved for the closed trigonometric propagator; equality
+of that propagator with the independently proved unitary matrix exponential
+remains an explicit obligation.
+
 ## Build and inspect
 
 ```bash
@@ -272,7 +281,9 @@ There are no unfinished proof terms in compiled modules. Optional next targets:
 Dirichlet kinetic positive definiteness via a boundary-inclusive sum of squared
 differences; spectral bounds; the path-profile supremum/subdivision theorems;
 normalized Gaussian states; linear-map packaging of sharp projections; and
-later qubit/Bloch results. None of these is presented as already proved.
+the exponential/closed-form bridge described in the Slice 4 coverage document.
+The qubit/Bloch results themselves have now been added there; the other optional
+targets in this list are not presented as already proved.
 
 CI uses the existing lean-action workflow. Documentation deployment was already
 disabled; no confirmed workflow defect or remote failure was available to fix.
