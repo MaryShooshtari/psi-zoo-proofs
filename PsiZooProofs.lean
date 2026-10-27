@@ -15,3 +15,6 @@ import PsiZooProofs.HamiltonianStructure
 import PsiZooProofs.CoordinateProjection
 import PsiZooProofs.FiniteMeasurement
 import PsiZooProofs.GaussianMeasurement
+import PsiZooProofs.Qubit
+import PsiZooProofs.CreatureCoupling
+import PsiZooProofs.QubitExponential

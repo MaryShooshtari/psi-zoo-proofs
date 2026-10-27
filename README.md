@@ -16,6 +16,32 @@ of the TypeScript implementation or the entire application.
 - **Inspect Slice 2 and general Cayley results:** [verified invariants, assumptions,
   theorem inventory, and proof explanations](docs/VERIFIED_INVARIANTS.md).
 
+## Slice 4: qubits, mood drive, and two-creature mean field
+
+**27 new checked theorems** cover the Bloch sphere and global phase, Pauli
+Hamiltonian Hermiticity, closed-form norm preservation (including zero field),
+full right-handed Bloch rotation at angle `2|a|t`, genuine matrix-exponential
+unitarity, real mood/contact potentials, label and interaction-energy symmetry,
+and spatial norm preservation for both frozen-potential CN solves.
+
+See [Slice 4 coverage](docs/SLICE4_COVERAGE.md) for **every exact theorem name,
+assumption, source, TypeScript correspondence, tactic explanation, and build
+result**. Modules: [Qubit.lean](PsiZooProofs/Qubit.lean),
+[QubitExponential.lean](PsiZooProofs/QubitExponential.lean), and
+[CreatureCoupling.lean](PsiZooProofs/CreatureCoupling.lean).
+
+```bash
+lake build
+lake env lean Slice4Checks.lean
+```
+
+The trigonometric propagator and genuine matrix exponential have independent
+norm-preservation proofs; their equality is **not yet formalized**. The rotation
+law is proved for the trigonometric propagator. Neither implementation
+correspondence nor IEEE-754 behavior is verified. Frozen-density mean-field
+coupling is not entanglement and does not imply exact combined-energy
+conservation. The game repository was not modified.
+
 ## Completed Crank–Nicolson proof chain
 
 Assume positive real spacing `dx`, any real `dt` (including zero and negative),
